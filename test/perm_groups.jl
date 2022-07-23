@@ -22,7 +22,7 @@ end
     G = PermutationGroup([perm"(1,2)", perm"(1,2,3)"])
     @test order(G) == 6
     @test Set(collect(G)) == Set([
-        perm"()",
+        perm"(1)",
         perm"(1,2)",
         perm"(1,2,3)",
         perm"(2,3)",
