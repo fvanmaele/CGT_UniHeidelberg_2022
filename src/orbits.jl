@@ -100,6 +100,7 @@ Base.iterate(t::Transversal, state) = iterate(t.points, state)
 Base.length(t::Transversal) = length(t.points)
 Base.in(x, t::Transversal) = haskey(t.representatives, x)
 Base.first(t::Transversal) = first(t.points)
+Base.rand(t::Transversal) = rand(t.points)
 action(t::Transversal) = t.action
 
 function Base.getindex(t::Transversal, pt)
@@ -149,6 +150,7 @@ Base.iterate(t::SchreierTree, state) = iterate(t.points, state)
 Base.length(t::SchreierTree) = length(t.points)
 Base.in(x, t::SchreierTree) = haskey(t.representatives, x)
 Base.first(t::SchreierTree) = first(t.points)
+Base.rand(t::SchreierTree) = rand(t.points)
 action(t::SchreierTree) = t.action
 
 function Base.getindex(t::SchreierTree, pt)

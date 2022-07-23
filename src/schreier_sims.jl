@@ -1,3 +1,5 @@
+export schreier_sims, StabilizerChain
+
 struct StabilizerChain{T<:AbstractTransversal, P<:AbstractPermutation}
     transversals::Vector{T}
     gens::Vector{Vector{P}} # generators for stabilizers
@@ -117,3 +119,4 @@ order(sc::StabilizerChain) = order(BigInt, sc)
 
 order(::Type{I}, sc::StabilizerChain) where I =
     convert(I, mapreduce(length, *, transversals(sc), init=one(I)))
+

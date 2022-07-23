@@ -19,5 +19,6 @@ include("schreier_sims.jl")
 include("alphabet.jl")
 include("word.jl")
 include("free_group.jl")
+include("rand.jl")
 
 end # of module CGT_UniHeidelberg_2022
