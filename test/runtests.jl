@@ -17,4 +17,5 @@ include("small_perm_groups.jl")
     include("transversals.jl")
     include("schreier_sims.jl")
     include("alphabet.jl")
+    include("word.jl")
 end
