@@ -39,23 +39,22 @@ function schreier_sims(::Type{T}, S::AbstractVector{P}) where {T<:AbstractTransv
 end
 
 function sift(sc::StabilizerChain, g::AbstractPermutation; start_at_depth=1)
-    d = start_at_depth
     r = g # the residual
 
     for i in start_at_depth:depth(sc)
         T = transversal(sc, i)
-        γ = basis(sc, i)^r
+        β = first(T)
+        γ = action(T)(β, r)
+
         if γ ∉ T
-            return d, r
+            return i, r
         else
             r = r*inv(T[γ])
-            d += 1
-            if r == one(r)
-                return d, r
+            if r == one(g)
+                return i+1, r
             end
         end
     end
-    
     return depth(sc)+1, r
 end
 
@@ -98,24 +97,34 @@ function extend_chain!(sc::StabilizerChain{T}, g::AbstractPermutation) where T
     return sc
 end
 
-function extend_gens!(sc::StabilizerChain{T}, g::AbstractPermutation; at_depth::Integer) where T
+function extend_gens!(sc::StabilizerChain, g::AbstractPermutation; at_depth::Integer)
     push!(sc.gens[at_depth], g) # add new generators
-    
+    T = transversal(sc, at_depth) # in-place update of stabilizer chain
+
+    # old points only with new generator
+    for δ ∈ T
+        γ = action(T)(δ, g)
+        if γ ∉ T
+            # add γ to orbit, update transversal
+            push!(T, γ=>T[δ]*g)
+        else
+            # γ is a coset representative for G(i+1) in G(i)
+            s = T[δ]*g*inv(T[γ]) # Schreier generator
+            push!(sc, s, at_depth=at_depth+1) # push to next layer
+        end
+    end
+
     # recompute transversal + process all the new schreier generators
-    β = basis(sc, at_depth)
-    S = gens(sc, at_depth)
-    tr = T(β, S, ^)
-
-    sc.transversals[at_depth] = tr
-
-    # a potentially new Schreier generator on the next layer:
-    schr = g^length(tr)
-    # clearly β^schr == β, so it is a generator for the next stabilizer
-    if !isone(schr)
-        # here we can directly extend_chain and shortcut all checks + call to sift
-        push!(sc, schr, at_depth=at_depth+1)
-        # otherwise we could do
-        # push!(sc, schr, at_depth=depth(sc)+1)
+    for δ ∈ T
+        for b ∈ sc.gens[at_depth] # includes g
+            γ = action(T)(δ, b)
+            if γ ∉ T
+                push!(T, γ=>T[δ]*b)
+            else
+                s = T[δ]*b*inv(T[γ])
+                push!(sc, s, at_depth=at_depth+1)
+            end
+        end
     end
     return sc
 end
