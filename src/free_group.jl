@@ -34,13 +34,7 @@ mutable struct FPGroupElement{G<:AbstractFPGroup, W<:AbstractWord} <: GroupEleme
 end
 
 # Pre-allocation methods
-function Base.similar(g::FPGroupElement)
-    return FPGroupElement(g.parent, similar(g.word))
-end
-
-function Base.similar(g::FPGroupElement, dim::Int)
-    return FPGroupElement(g.parent, similar(g.word, dim))
-end
+Base.similar(g::FPGroupElement, n=length(word(g))) = FPGroupElement(parent(g), similar(word(g), n))
 
 # Accessors
 Base.parent(g::FPGroupElement) = g.parent
