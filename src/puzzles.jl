@@ -36,6 +36,3 @@ function split_to_gens(gens::AbstractVector{P}, g::P) where {P}
     end
     throw(ArgumentError("element is not in group"))
 end
-
-split_to_gens(G::CGT.AbstractPermGroup, g::P) where {P<:CGT.AbstractPermutation} =
-    split_to_gens(CGT.gens(G), g)
