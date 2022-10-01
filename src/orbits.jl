@@ -168,6 +168,25 @@ function Base.getindex(t::SchreierTree, pt)
     return g
 end
 
+# Returns individual letters of a word as well as their concatenation.
+# Used for puzzles.jl/split_to_gens
+function trace(t::SchreierTree, pt)
+    pt ∉ t && throw(KeyError(pt))
+
+    e = one(t.representatives[pt])
+    g = e
+    point = pt
+    L = Vector{typeof(e)}()
+
+    while (s = t.representatives[point]) != e
+        point = action(t)(point, inv(s))
+        push!(L, s)
+        g = s*g
+    end
+
+    return g, L
+end
+
 Base.setindex!(t::SchreierTree, s::GroupElement, pt) = push!(t, pt=>s)
 
 function Base.push!(t::SchreierTree, y_g::Pair{T, <:GroupElement}) where T

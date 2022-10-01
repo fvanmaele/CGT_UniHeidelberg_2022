@@ -22,5 +22,6 @@ include("free_group.jl")
 include("rand.jl")
 include("perm_groups.jl")
 include("backtrack.jl")
+include("puzzles.jl")
 
 end # of module CGT_UniHeidelberg_2022

@@ -12,7 +12,9 @@ function backtrack!(sc::CGT.StabilizerChain, L::AbstractVector;
     T = CGT.transversal(sc, depth)
 
     for δ ∈ T
+        println("depth: ", depth, " base image: ", δ)
         if CGT.depth(sc) == depth  # we are in a leaf node
+            println("group element: ", g*T[δ])
             push!(L, g*T[δ])
         else
             backtrack!(sc, L, g=g*T[δ], depth=depth+1)
@@ -35,7 +37,8 @@ function backtrack!(sc::CGT.StabilizerChain, C::Channel;
 end
 
 # Experimental version using explicit stack
-# XXX: the ordering is different from the recursive version
+# Note: the order is breadth-first, not depth-first. This can be used
+# to easily prune the search tree using partial base images.
 function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
     stack = [(1, CGT.Permutation(Int[]))]
 
@@ -44,7 +47,9 @@ function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
         T = CGT.transversal(sc, depth)
 
         for δ ∈ T
+            println("depth: ", depth, " base image: ", δ)
             if CGT.depth(sc) == depth  # we are in a leaf node
+                println("group element: ", g*T[δ])
                 push!(L, g*T[δ])
             else
                 push!(stack, (depth+1, g*T[δ]))
