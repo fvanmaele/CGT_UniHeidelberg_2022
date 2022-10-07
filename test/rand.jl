@@ -4,7 +4,7 @@
 
     for group_order in 2:30
         for S in SmallPermGroups[group_order]
-            sc = schreier_sims(S)
+            sc = CGT.schreier_sims(S)
 
             # check that elements are (approximately) uniformly distributed
             V = []
