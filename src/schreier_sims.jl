@@ -1,5 +1,3 @@
-export schreier_sims, StabilizerChain
-
 struct StabilizerChain{T<:AbstractTransversal, P<:AbstractPermutation}
     transversals::Vector{T}
     gens::Vector{Vector{P}} # generators for stabilizers
@@ -7,6 +5,8 @@ struct StabilizerChain{T<:AbstractTransversal, P<:AbstractPermutation}
     function StabilizerChain(
         transversals::AbstractVector{<:AbstractTransversal},
         gens::AbstractVector{<:AbstractVector{<:AbstractPermutation}},
+        # for some reason I could only get the tests to work when I specified the
+        # type here, so using 'Permutation' instead of '<:AbstractPermutation'
     )
         @assert length(transversals) == length(gens)
         T = eltype(transversals)
@@ -99,6 +99,20 @@ end
 
 function extend_gens!(sc::StabilizerChain, g::AbstractPermutation; at_depth::Integer)
     push!(sc.gens[at_depth], g) # add new generators
+    T = transversal(sc, at_depth) # in-place update of stabilizer chain
+
+    # old points only with new generator
+    for δ ∈ T
+        γ = action(T)(δ, g)
+        if γ ∉ T
+            # add γ to orbit, update transversal
+            push!(T, γ=>T[δ]*g)
+        else
+            # γ is a coset representative for G(i+1) in G(i)
+            s = T[δ]*g*inv(T[γ]) # Schreier generator
+            push!(sc, s, at_depth=at_depth+1) # push to next layer
+        end
+    end
 
     # recompute transversal + process all the new schreier generators
     for δ ∈ T
@@ -114,9 +128,3 @@ function extend_gens!(sc::StabilizerChain, g::AbstractPermutation; at_depth::Int
     end
     return sc
 end
-
-order(sc::StabilizerChain) = order(BigInt, sc)
-
-order(::Type{I}, sc::StabilizerChain) where I =
-    convert(I, mapreduce(length, *, transversals(sc), init=one(I)))
-
