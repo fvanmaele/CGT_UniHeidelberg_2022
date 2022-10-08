@@ -14,10 +14,9 @@ function backtrack!(sc::CGT.StabilizerChain, L::AbstractVector;
     for δ ∈ T
         println("depth: ", depth, " base image: ", δ)
         if CGT.depth(sc) == depth  # we are in a leaf node
-            println("group element: ", g*T[δ])
-            push!(L, g*T[δ])
+            push!(L, T[δ]*g)
         else
-            backtrack!(sc, L, g=g*T[δ], depth=depth+1)
+            backtrack!(sc, L; g=T[δ]*g, depth=depth+1)
         end
     end
     return L
@@ -29,9 +28,9 @@ function backtrack!(sc::CGT.StabilizerChain, C::Channel;
 
     for δ ∈ T
         if CGT.depth(sc) == depth  # we are in a leaf node
-            put!(C, g*T[δ])
+            put!(C, T[δ]*g)
         else
-            backtrack!(sc, C, g=g*T[δ], depth=depth+1)
+            backtrack!(sc, C; g=T[δ]*g, depth=depth+1)
         end
     end
 end
@@ -47,12 +46,12 @@ function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
         T = CGT.transversal(sc, depth)
 
         for δ ∈ T
-            println("depth: ", depth, " base image: ", δ)
+            #println("depth: ", depth, " base image: ", δ)
             if CGT.depth(sc) == depth  # we are in a leaf node
-                println("group element: ", g*T[δ])
-                push!(L, g*T[δ])
+                #println("group element: ", g*T[δ])
+                push!(L, T[δ]*g)
             else
-                push!(stack, (depth+1, g*T[δ]))
+                push!(stack, (depth+1, T[δ]*g))
             end
         end
     end
@@ -84,4 +83,17 @@ function Base.iterate(::CGT.PermutationGroup, state::PGroupIterator)
     else
         return nothing
     end
+end
+
+# XXX: due to a race condition with channels, Base.collect returns a vector
+# with undefined elements.
+function Base.collect(G::PermutationGroup)
+    n = order(G)
+    L = Vector{eltype(G)}(undef, n)
+    state = PGroupIterator(G)
+    for i = 1:n
+        g = take!(state)
+        L[i] = g
+    end
+    return L
 end
