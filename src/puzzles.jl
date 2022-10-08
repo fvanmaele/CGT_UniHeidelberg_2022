@@ -2,11 +2,11 @@
 
 const CGT = CGT_UniHeidelberg_2022
 
-export split_to_gens
+export decompose
 
 # Express a group element `g` as a product of transversal elements, each of
 # which has been obtained as a product of generators.
-function split_to_gens(gens::AbstractVector{P}, g::P) where {P}
+function decompose(gens::AbstractVector{P}, g::P) where {P}
     # Use `SchreierTree` to keep track of how transversal elements arose as 
     # products of the original generators.
     G = PermutationGroup{P, CGT.SchreierTree{Int64, P, typeof(^)}}(gens)

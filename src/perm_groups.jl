@@ -1,7 +1,7 @@
 # included from CGT_UniHeidelberg_2022.jl
 
 const CGT = CGT_UniHeidelberg_2022
-export PermutationGroup
+export PermutationGroup, order, gens, unsafe_gens, stabilizer_chain
 
 abstract type Group end
 abstract type AbstractPermGroup{P<:CGT.AbstractPermutation} <: Group end
