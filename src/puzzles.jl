@@ -2,10 +2,11 @@
 
 const CGT = CGT_UniHeidelberg_2022
 
-export decompose
+export decompose, base_images, sends_to
 
-# Express a group element `g` as a product of transversal elements, each of
-# which has been obtained as a product of generators.
+""" Express a group element `g` as a product of transversal elements, each of
+    which has been obtained as a product of generators.
+"""
 function decompose(gens::AbstractVector{P}, g::P) where {P}
     # Use `SchreierTree` to keep track of how transversal elements arose as 
     # products of the original generators.
@@ -35,4 +36,39 @@ function decompose(gens::AbstractVector{P}, g::P) where {P}
         end
     end
     throw(ArgumentError("element is not in group"))
+end
+
+""" Modified element test which returns a list of base images. This function
+    is inverse to `perm_by_images`.
+"""
+function base_images(sc::CGT.StabilizerChain, g::Permutation)
+    r = g # the residual
+    L = Vector{Int}()
+
+    for i in 1:depth(sc)
+        T = CGT.transversal(sc, i)
+        y = CGT.basis(sc, i)^r
+
+        if y ∉ T
+            throw(ArgumentError("element is not in group"))
+        else
+            r = r*inv(T[y])
+            push!(L, y)
+        end
+    end
+
+    if r != one(r)
+        throw(ArgumentError("element is not in group"))
+    end
+    @assert length(L) == CGT.depth(sc)
+    return L
+end
+
+""" Function using backtrack search which, given 2 group elements `g` and `h`,
+    finds a group element that sends `g` to `h`. To this end, the base images
+    representing the group elements are retrieved. The search tree is traversed
+    in breadth-first order, looking for a common ancestor of `g` and `h`.
+"""
+function sends_to(sc::CGT.StabilizerChain, g::CGT.Permutation, h::CGT.Permutation)
+
 end

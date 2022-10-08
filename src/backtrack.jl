@@ -22,6 +22,9 @@ function backtrack!(sc::CGT.StabilizerChain, L::AbstractVector;
     return L
 end
 
+""" Version using `Channel` instead of a vector, for use with the
+    iterator interface.
+"""
 function backtrack!(sc::CGT.StabilizerChain, C::Channel;
                     g::CGT.Permutation = CGT.Permutation(Int[]), depth::Int = 1)
     T = CGT.transversal(sc, depth)
@@ -35,9 +38,10 @@ function backtrack!(sc::CGT.StabilizerChain, C::Channel;
     end
 end
 
-# Experimental version using explicit stack
-# Note: the order is breadth-first, not depth-first. This can be used
-# to easily prune the search tree using partial base images.
+""" Experimental version using explicit stack.
+    Note: the order is breadth-first, not depth-first. This can be used
+    to easily prune the search tree using partial base images.
+"""
 function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
     stack = [(1, CGT.Permutation(Int[]))]
 
@@ -58,7 +62,8 @@ function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
     return L
 end
 
-# Helpers to make backtrack! work with iterator interface
+""" Helpers to make backtrack! work with the iterator interface.
+"""
 struct PGroupIterator
     C::Channel
 
