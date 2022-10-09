@@ -67,8 +67,8 @@ end
         S = union(gens(G), inv.(gens(G))) # symmetric generating set
         x = prod(rand(S, 50)) # random element from G
 
-        elts = CGT_UniHeidelberg_2022.decompose(g, G)
-        @test elts isa AbstractVector{<:AbstractPermutation}
+        elts = CGT_UniHeidelberg_2022.decompose(x, G)
+        @test elts isa AbstractVector{<:CGT.AbstractPermutation}
         @test all(g ∈ S for g in elts)
         @test isone(x*inv(prod(elts)))
     end
@@ -77,8 +77,8 @@ end
         S = union(gens(G), inv.(gens(G))) # symmetric generating set
         x = prod(rand(S, 50)) # random element from G
 
-        elts = CGT_UniHeidelberg_2022.decompose(g, G)
-        @test elts isa AbstractVector{<:AbstractPermutation}
+        elts = CGT_UniHeidelberg_2022.decompose(x, G)
+        @test elts isa AbstractVector{<:CGT.AbstractPermutation}
         @test all(g ∈ S for g in elts)
         @test isone(x*inv(prod(elts)))
     end
@@ -91,19 +91,19 @@ end
     # {9..16}->{9..16}, etc.
 
 
-    let G = PermutationGroup(cube4)
-        S = union(gens(G), inv.(gens(G)))
-        x = prod(rand(S, 50))
+    # let G = PermutationGroup(cube4)
+    #     S = union(gens(G), inv.(gens(G)))
+    #     x = prod(rand(S, 50))
 
-        g = # backtrack here on stabilizer chain of G
+    #     g = # backtrack here on stabilizer chain of G
 
-        elts = CGT_UniHeidelberg_2022.decompose(g, G)
-        @test elts isa AbstractVector{<:AbstractPermutation}
-        @test all(g ∈ S for g in elts)
-        t = x*inv(prod(elts))
-        for face in (1:8, 9:16, 17:24, 25:32, 33:40, 41:48)
-            F = BitSet(face)
-            @test all(i^t ∈ F for i in face)
-        end
-    end
+    #     elts = CGT_UniHeidelberg_2022.decompose(g, G)
+    #     @test elts isa AbstractVector{<:AbstractPermutation}
+    #     @test all(g ∈ S for g in elts)
+    #     t = x*inv(prod(elts))
+    #     for face in (1:8, 9:16, 17:24, 25:32, 33:40, 41:48)
+    #         F = BitSet(face)
+    #         @test all(i^t ∈ F for i in face)
+    #     end
+    # end
 end
