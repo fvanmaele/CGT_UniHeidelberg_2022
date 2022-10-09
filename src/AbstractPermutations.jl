@@ -2,7 +2,7 @@ module AbstractPermutations
 
 import ..GroupElement
 
-export AbstractPermutation, degree, firstmoved
+export AbstractPermutation, degree, firstmoved, cycle_decomposition
 
 """
     AbstractPermutation

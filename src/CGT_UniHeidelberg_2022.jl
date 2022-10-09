@@ -19,9 +19,8 @@ include("schreier_sims.jl")
 include("alphabet.jl")
 include("word.jl")
 include("free_group.jl")
-include("rand.jl")
 include("perm_groups.jl")
 include("backtrack.jl")
-include("puzzles.jl")
+include("decompose.jl")
 
 end # of module CGT_UniHeidelberg_2022

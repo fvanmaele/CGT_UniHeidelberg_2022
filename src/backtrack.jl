@@ -11,9 +11,10 @@ function backtrack!(sc::CGT.StabilizerChain, L::AbstractVector;
                     g::CGT.Permutation = CGT.Permutation(Int[]), depth::Int = 1)
     T = CGT.transversal(sc, depth)
 
-    for δ ∈ T
-        println("depth: ", depth, " base image: ", δ)
+    for δ ∈ T  # select new base image
+        # println("depth: ", depth, " base image: ", δ)
         if CGT.depth(sc) == depth  # we are in a leaf node
+            # println("group element: ", g*T[δ])
             push!(L, T[δ]*g)
         else
             backtrack!(sc, L; g=T[δ]*g, depth=depth+1)
@@ -42,6 +43,7 @@ end
     Note: the order is breadth-first, not depth-first. This can be used
     to easily prune the search tree using partial base images.
 """
+# TODO: implement the iterator interface using this method
 function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
     stack = [(1, CGT.Permutation(Int[]))]
 
@@ -49,10 +51,8 @@ function backtrack_stack!(sc::CGT.StabilizerChain, L::AbstractVector)
         depth, g = pop!(stack)
         T = CGT.transversal(sc, depth)
 
-        for δ ∈ T
-            #println("depth: ", depth, " base image: ", δ)
+        for δ ∈ T  # select new base image
             if CGT.depth(sc) == depth  # we are in a leaf node
-                #println("group element: ", g*T[δ])
                 push!(L, T[δ]*g)
             else
                 push!(stack, (depth+1, T[δ]*g))
